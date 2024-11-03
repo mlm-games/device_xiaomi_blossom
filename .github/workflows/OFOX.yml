@@ -1,0 +1,78 @@
+name: Build OrangeFox Recovery
+
+on:
+  push:      
+    branches: 
+      - '**'   # This will match all branches
+    paths-ignore:
+      - 'README.md'
+  pull_request: 
+    branches: 
+      - '**' 
+    paths-ignore:
+      - 'README.md'
+  workflow_dispatch:
+    inputs:
+      upload_releases:
+        description: 'Upload releases'
+        required: true
+        default: 'true'
+        type: boolean
+      mark_prerelease:
+        description: 'Mark as prerelease'
+        required: true
+        default: 'true'
+        type: boolean
+
+jobs:
+  build:
+    name: Build OFRP by ${{ github.actor }}
+    runs-on: ubuntu-latest
+    if: github.event.repository.owner.id == github.event.sender.id
+    permissions:
+      contents: write
+    steps:
+    - name: Clean ubuntu
+      uses: rokibhasansagar/slimhub_actions@main
+
+    - name: Swap Space
+      uses: pierotofy/set-swap-space@master
+      with:
+        swap-size-gb: 12
+
+    - name: Build OrangeFox Recovery
+      uses: mlm-games/OrangeFox-Builder-Action@main
+      with: 
+        MANIFEST_BRANCH: '12.1'
+        
+    - name: Upload to Release
+      uses: softprops/action-gh-release@v2
+      if: github.event_name == 'workflow_dispatch' && inputs.upload_releases == true
+      with:
+        files: |
+          ${{ env.OUTPUT_DIR }}/OrangeFox*.img
+          ${{ env.OUTPUT_DIR }}/OrangeFox*.tar
+          ${{ env.OUTPUT_DIR }}/OrangeFox*.zip
+          ${{ env.OUTPUT_DIR }}/*vbmeta*    
+          ${{ env.OUTPUT_DIR }}/*.cpio
+        name: Unofficial OrangeFox for ${{ env.DEVICE_NAME }} 
+        tag_name: ${{ github.run_id }}
+        body: |
+          Build: ${{ env.MANIFEST_BRANCH }}
+          Device: [Device Tree/Branch](${{ env.DEVICE_TREE }}/tree/${{ env.DEVICE_TREE_BRANCH }})
+          Commit: Most recent [commit](${{ env.DEVICE_TREE }}/commit/${{ env.COMMIT_ID }}) during building.
+          MD5 (img): ${{ env.MD5_IMG }}
+          MD5 (zip): ${{ env.MD5_ZIP }}
+        prerelease: ${{ inputs.mark_prerelease }}
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v4
+      if: inputs.upload_releases == false || github.event_name != 'workflow_dispatch'
+      with:
+        name: TWRP-Recovery-${{ github.event.repository.name }}
+        path: |
+          ${{ env.OUTPUT_DIR }}/*.img
+          ${{ env.OUTPUT_DIR }}/*.tar
+          ${{ env.OUTPUT_DIR }}/*vbmeta*
+          ${{ env.OUTPUT_DIR }}/*.cpio
+          ${{ env.OUTPUT_DIR }}/*.zip
