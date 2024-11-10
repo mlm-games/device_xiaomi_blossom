@@ -4,8 +4,8 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-# Enable updating of APEXes
-$(call inherit-product, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
+# Enable updating of APEXes. If-exists added due to TWRP not supporting it.
+$(call inherit-product-if-exists, $(SRC_TARGET_DIR)/product/updatable_apex.mk)
 
 # Installs developer gsi keys into ramdisk, to boot a developer GSI with verified boot. If-exists added due to TWRP not supporting it.
 $(call inherit-product-if-exists, $(SRC_TARGET_DIR)/product/developer_gsi_keys.mk)
