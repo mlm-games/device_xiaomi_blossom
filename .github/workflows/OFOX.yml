@@ -44,7 +44,7 @@ jobs:
       uses: mlm-games/OrangeFox-Builder-Action@main
       with: 
         MANIFEST_BRANCH: '12.1'
-        DEVICE_TREE_BRANCH: ${{ github.ref }}
+        DEVICE_TREE_BRANCH: ${{ github.ref_name }}
         
     - name: Generate Build Info
       id: build_info
