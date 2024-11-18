@@ -32,12 +32,6 @@ jobs:
     permissions:
       contents: write
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.ref }}
-        fetch-depth: 0
-
     - name: Clean ubuntu
       uses: rokibhasansagar/slimhub_actions@main
 
@@ -50,6 +44,7 @@ jobs:
       uses: mlm-games/OrangeFox-Builder-Action@main
       with: 
         MANIFEST_BRANCH: '12.1'
+        DEVICE_TREE_BRANCH: ${{ github.ref }}
         
     - name: Generate Build Info
       id: build_info
