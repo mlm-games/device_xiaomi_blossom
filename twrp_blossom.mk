@@ -9,7 +9,10 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_base.mk)
 $(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
 
 # Inherit from our custom product configuration
-$(call inherit-product, vendor/twrp/config/common.mk)
+-include $(call if-exists,vendor/twrp/config/common.mk)
+
+# Inherit from the common PBRP configuration, if it exists
+-include $(call if-exists,vendor/pb/config/common.mk)
 
 # Inherit from blossom device
 $(call inherit-product, device/xiaomi/blossom/device.mk)
