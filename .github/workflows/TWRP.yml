@@ -38,11 +38,13 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        recovery:
+        include:
           - name: TWRP
-            action: mlm-games/TWRP-recovery-build-action@main
+            uses: mlm-games/TWRP-recovery-build-action@main
+            manifest_branch: ${{ env.MANIFEST_BRANCH }}
           - name: OrangeFox
-            action: mlm-games/OrangeFox-Builder-Action@main
+            uses: mlm-games/OrangeFox-Builder-Action@main 
+            manifest_branch: '12.1'
     env:
       BRANCH_NAME: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || github.ref_name }}
       UPLOAD_RELEASES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.upload_releases || 'false' }}
@@ -66,7 +68,7 @@ jobs:
           echo "COMMIT_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Build Recovery
-        uses: ${{ matrix.recovery.action }}
+        uses: ${{ matrix.uses }}
         with:
           MANIFEST_BRANCH: ${{ matrix.recovery.name == 'TWRP' && env.MANIFEST_BRANCH || '12.1' }}
           DEVICE_TREE_BRANCH: ${{ env.BRANCH }}
