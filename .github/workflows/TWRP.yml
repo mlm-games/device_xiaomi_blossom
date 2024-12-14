@@ -44,7 +44,7 @@ jobs:
       UPLOAD_RELEASES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.upload_releases || 'false' }}
       MARK_PRERELEASE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mark_prerelease || 'false' }}
       MANIFEST_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.manifest_branch || '' }}
-      BUILD_TARGET: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_target || '' }}
+      BUILD_TARGET: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_target || 'recovery' }}
 
     steps:
       - name: Clean Ubuntu
