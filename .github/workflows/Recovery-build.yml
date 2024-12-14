@@ -1,4 +1,4 @@
-name: TWRP
+name: Build (or release) TWRP, OFOX or PBRP
 
 on:
   push:
