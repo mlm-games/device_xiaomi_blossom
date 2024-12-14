@@ -31,7 +31,7 @@ on:
 
 jobs:
   build:
-    name: Build ${{ matrix.recovery.name }}
+    name: Build ${{ matrix.name }}
     runs-on: ubuntu-latest
     permissions:
       contents: write
