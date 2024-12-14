@@ -71,7 +71,6 @@ jobs:
           MANIFEST_BRANCH: ${{ matrix.recovery.name == 'TWRP' && env.MANIFEST_BRANCH || '12.1' }}
           DEVICE_TREE_BRANCH: ${{ env.BRANCH }}
           BUILD_TARGET: ${{ env.BUILD_TARGET }}
-          ${{ matrix.recovery.name == 'TWRP' && 'MAKEFILE_NAME' || '' }}: ${{ env.MAKEFILE_NAME }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
