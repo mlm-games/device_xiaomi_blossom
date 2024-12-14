@@ -45,7 +45,8 @@ jobs:
       MARK_PRERELEASE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mark_prerelease || 'false' }}
       MANIFEST_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.manifest_branch || '' }}
       BUILD_TARGET: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_target || 'recovery' }}
-
+      SHA: $(git rev-parse --short "$GITHUB_SHA")
+      
     steps:
       - name: Clean Ubuntu
         uses: rokibhasansagar/slimhub_actions@main
@@ -59,7 +60,7 @@ jobs:
         id: build_info
         run: |
           echo "BUILD_DATE=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
-          echo "COMMIT_SHORT=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          echo "COMMIT_SHORT=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
 
       - name: Build TWRP
         if: matrix.name == 'TWRP'
