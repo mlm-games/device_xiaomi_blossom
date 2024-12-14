@@ -38,7 +38,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        name: [TWRP, OrangeFox]
+        name: [TWRP, OrangeFox, PBRP]
     env:
       BRANCH_NAME: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.branch || github.ref_name }}
       UPLOAD_RELEASES: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.upload_releases || 'false' }}
@@ -76,6 +76,14 @@ jobs:
           MANIFEST_BRANCH: '12.1'
           DEVICE_TREE_BRANCH: ${{ env.BRANCH_NAME }}
           BUILD_TARGET: ${{ env.BUILD_TARGET }}
+
+      - name: Build PBRP
+        if: matrix.name == 'PBRP' 
+        uses: mlm-games/Pitchblack-PBRP-builder-action@main
+        with:
+          MANIFEST_BRANCH: 'android-12.1'
+          DEVICE_TREE_BRANCH: ${{ env.BRANCH_NAME }}
+          BUILD_TARGET: 'pbrp'
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
