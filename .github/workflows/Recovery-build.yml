@@ -91,9 +91,9 @@ jobs:
           name: ${{ matrix.name }}-${{ env.DEVICE_NAME }}-${{ env.BUILD_DATE }}
           path: |
             ${{ env.OUTPUT_DIR }}/*.img
-            ${{ env.OUTPUT_DIR }}/*.tar
             ${{ env.OUTPUT_DIR }}/*vbmeta*
             ${{ env.OUTPUT_DIR }}/*.cpio
+            ${{ env.OUTPUT_DIR }}/*.zip
 
       - name: Upload to Release
         if: github.event_name == 'workflow_dispatch' && env.UPLOAD_RELEASES == 'true'
@@ -101,9 +101,9 @@ jobs:
         with:
           files: |
             ${{ env.OUTPUT_DIR }}/*.img
-            ${{ env.OUTPUT_DIR }}/*.tar
             ${{ env.OUTPUT_DIR }}/*vbmeta*
             ${{ env.OUTPUT_DIR }}/ramdisk-recovery.*
+            ${{ env.OUTPUT_DIR }}/*.zip
           name: "${{ matrix.name }} Recovery for ${{ env.DEVICE_NAME }} | ${{ env.BUILD_DATE }}"
           tag_name: ${{ matrix.name }}-${{ env.DEVICE_NAME }}-${{ env.BUILD_DATE }}
           body: |
