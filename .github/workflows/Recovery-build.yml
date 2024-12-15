@@ -119,7 +119,7 @@ jobs:
             ### 📊 Checksums
             ```
             Image (IMG): ${{ env.MD5_IMG }}
-            Ramdisk: ${{ env.MD5_ZIP }}
+            Zip (if present): ${{ env.MD5_ZIP }}
             ```
             
             ### ⚠️ Notes
