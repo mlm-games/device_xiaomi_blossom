@@ -45,7 +45,6 @@ jobs:
       MARK_PRERELEASE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.mark_prerelease || 'false' }}
       MANIFEST_BRANCH: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.manifest_branch || '' }}
       BUILD_TARGET: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_target || 'recovery' }}
-      SHA: $(git rev-parse --short "$GITHUB_SHA")
       
     steps:
       - name: Clean Ubuntu
@@ -54,13 +53,12 @@ jobs:
       - name: Swap Space
         uses: pierotofy/set-swap-space@master
         with:
-          swap-size-gb: 12
+          swap-size-gb: 16
 
       - name: Generate Build Info
         id: build_info
         run: |
           echo "BUILD_DATE=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
-          echo "COMMIT_SHORT=$(git rev-parse --short "$GITHUB_SHA")" >> $GITHUB_ENV
 
       - name: Build TWRP
         if: matrix.name == 'TWRP'
@@ -90,7 +88,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: inputs.upload_releases == false || github.event_name != 'workflow_dispatch'
         with:
-          name: ${{ matrix.name }}-${{ env.DEVICE_NAME }}-${{ env.COMMIT_SHORT }}
+          name: ${{ matrix.name }}-${{ env.DEVICE_NAME }}-${{ env.BUILD_DATE }}
           path: |
             ${{ env.OUTPUT_DIR }}/*.img
             ${{ env.OUTPUT_DIR }}/*.tar
@@ -107,14 +105,13 @@ jobs:
             ${{ env.OUTPUT_DIR }}/*vbmeta*
             ${{ env.OUTPUT_DIR }}/ramdisk-recovery.*
           name: "${{ matrix.name }} Recovery for ${{ env.DEVICE_NAME }} | ${{ env.BUILD_DATE }}"
-          tag_name: ${{ matrix.name }}-${{ env.DEVICE_NAME }}-${{ env.COMMIT_SHORT }}
+          tag_name: ${{ matrix.name }}-${{ env.DEVICE_NAME }}-${{ env.BUILD_DATE }}
           body: |
             ## 📱 ${{ matrix.name }} Recovery for ${{ env.DEVICE_NAME }}
             
             ### 📋 Build Information
             - **Build Date**: ${{ env.BUILD_DATE }}
             - **Branch**: `${{ env.BRANCH_NAME }}`
-            - **Commit**: [`${{ env.COMMIT_SHORT }}`](${{ github.server_url }}/${{ github.repository }}/commit/${{ env.COMMIT_SHORT }})
             
             ### 🔧 Device Information
             - **Device Tree**: [${{ env.DEVICE_NAME }}](${{ env.DEVICE_TREE }}/tree/${{ env.BRANCH_NAME }})
@@ -144,7 +141,7 @@ jobs:
         uses: mlm-games/ldcheck-action@main
         with:
           OUTPUT_DIR: ${{ env.OUTPUT_DIR }}
-          LDCHECKPATH: 'vendor/bin/teei_daemon'
+          LDCHECKPATH: 'recovery/root/vendor/bin/teei_daemon'
         continue-on-error: true
 
       - name: Cleanup
