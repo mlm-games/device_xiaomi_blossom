@@ -55,11 +55,6 @@ jobs:
         with:
           swap-size-gb: 16
 
-      - name: Generate Build Info
-        id: build_info
-        run: |
-          echo "BUILD_DATE=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
-
       - name: Build TWRP
         if: matrix.name == 'TWRP'
         uses: mlm-games/TWRP-recovery-build-action@main
@@ -83,6 +78,11 @@ jobs:
           MANIFEST_BRANCH: 'android-12.1'
           DEVICE_TREE_BRANCH: ${{ env.BRANCH_NAME }}
           BUILD_TARGET: 'pbrp'
+
+      - name: Generate Build Info
+        id: build_info
+        run: |
+          echo "BUILD_DATE=$(date +'%Y-%m-%d %H:%M:%S %Z')" >> $GITHUB_ENV
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v4
